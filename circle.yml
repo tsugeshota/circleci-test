@@ -24,7 +24,7 @@ dependencies:
         cd $HOME/.packer
         curl -LO https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
         unzip packer_${PACKER_VERSION}_linux_amd64.zip
-        rm packer_${TERRAFORM_VERSION}_linux_amd64.zip
+        rm packer_${PACKER_VERSION}_linux_amd64.zip
       fi
 
 test:
