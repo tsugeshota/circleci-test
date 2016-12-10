@@ -1,4 +1,5 @@
 machine:
+  timezone: Asia/Tokyo
   environment:
     PATH: $HOME/.terraform:$PATH
     TERRAFORM_VERSION: 0.7.13
