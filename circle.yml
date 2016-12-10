@@ -1,41 +1,45 @@
 machine:
   timezone: Asia/Tokyo
   environment:
-    PATH: $HOME/.packer/:$PATH
-    PACKER_VERSION: 0.12.0
+    PATH: $HOME/.terraform:$PATH
+    TERRAFORM_VERSION: 0.7.13
+
+general:
+  branches:
+    only:
+      - master
+      - /feature-.*/
 
 dependencies:
   cache_directories:
-    - ~/.packer
+    - ~/.terraform
 
 dependencies:
   pre:
     - |
-      if [ -e $HOME/.packer/ ]; then
-        current_packer_version=`packer --version`
-        if echo $current_packer_version | grep $PACKER_VERSION; then
-          echo "Using ${current_packer_version}"
+      if [ -e $HOME/.terraform/terraform ]; then
+        current_terraform_version=`terraform --version | grep 'Terraform v'`
+        if echo $current_terraform_version | grep $TERRAFORM_VERSION; then
+          echo "Using ${current_terraform_version}"
         else
-          echo "Uninstall ${current_packer_version}"
-          rm -rf $HOME/.packer
+          echo "Uninstall ${current_terraform_version}"
+          rm -rf $HOME/.terraform
         fi
       fi
     - |
-      mkdir -p $HOME/.packer
-      if [ -z "$(ls -A /usr/local/bin/packer)" ]; then
-        cd $HOME/.packer
-        curl -LO https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
-        unzip packer_${PACKER_VERSION}_linux_amd64.zip
-        rm packer_${PACKER_VERSION}_linux_amd64.zip
+      mkdir -p $HOME/.terraform
+      if [ -z "$(ls -A $HOME/.terraform)" ]; then
+        cd $HOME/.terraform
+        curl -LO https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+        unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+        rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
       fi
-    - |
-      sudo apt-get install -y software-properties-common
-      sudo apt-add-repository -y ppa:ansible/ansible
-      sudo apt-get update
-      sudo apt-get install -y ansible
+      mkdir -p $HOME/piculet
+      cd $HOME/piculet
+      gem install piculet
 
 test:
   post:
-    - ansible --version | sed -n 1p
+    - terraform --version
     - |
       bash test.sh
