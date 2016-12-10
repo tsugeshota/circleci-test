@@ -1,0 +1,33 @@
+machine:
+  environment:
+    PATH: $HOME/.terraform:$PATH
+    TERRAFORM_VERSION: 0.7.13
+
+dependencies:
+  cache_directories:
+    - ~/.terraform
+pre:
+    - |
+      if [ -e $HOME/.terraform/terraform ]; then
+        current_terraform_version=`terraform --version | grep 'Terraform v'`
+        if echo $current_terraform_version | grep $TERRAFORM_VERSION; then
+          echo "Using ${current_terraform_version}"
+        else
+          echo "Uninstall ${current_terraform_version}"
+          rm -rf $HOME/.terraform
+        fi
+      fi
+    - |
+      mkdir -p $HOME/.terraform
+      if [ -z "$(ls -A $HOME/.terraform)" ]; then
+        cd $HOME/.terraform
+        curl -LO https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+        unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+        rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+      fi
+
+test:
+  post:
+    - terraform --version
+    - |
+      bash test.sh
