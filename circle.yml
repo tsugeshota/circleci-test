@@ -35,3 +35,4 @@ test:
     - ansible --version | sed -n 1p
     - |
       bash test.sh
+
