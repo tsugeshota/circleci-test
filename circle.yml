@@ -10,7 +10,7 @@ dependencies:
   pre:
     - |
       if [ -e $HOME/.packer/packer ]; then
-        current_packer_version=`packer --version | grep 'packer v'`
+        current_packer_version=`packer --version`
         if echo $current_packer_version | grep $PACKER_VERSION; then
           echo "Using ${current_packer_version}"
         else
