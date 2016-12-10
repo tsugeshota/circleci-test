@@ -6,7 +6,7 @@ machine:
 dependencies:
   cache_directories:
     - ~/.terraform
-pre:
+  pre:
     - |
       if [ -e $HOME/.terraform/terraform ]; then
         current_terraform_version=`terraform --version | grep 'Terraform v'`
