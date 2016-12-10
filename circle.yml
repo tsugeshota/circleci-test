@@ -1,29 +1,27 @@
 machine:
   timezone: Asia/Tokyo
   environment:
-    PATH: $HOME/.packer/packer:$PATH
     PACKER_VERSION: 0.12.0
 
 dependencies:
   cache_directories:
-    - ~/.packer
+    - /usr/local/bin/packer
   pre:
     - |
-      if [ -e $HOME/.packer/packer ]; then
+      if [ -e /usr/local/bin/packer ]; then
         current_packer_version=`packer --version`
         if echo $current_packer_version | grep $PACKER_VERSION; then
           echo "Using ${current_packer_version}"
         else
           echo "Uninstall ${current_packer_version}"
-          rm -rf $HOME/.packer
+          sudo rm -f /usr/local/bin/packer
         fi
       fi
     - |
-      mkdir -p $HOME/.packer
-      if [ -z "$(ls -A $HOME/.packer)" ]; then
-        cd $HOME/.packer
+      if [ -z "$(ls -A /usr/local/bin/packer)" ]; then
         curl -LO https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
         unzip packer_${PACKER_VERSION}_linux_amd64.zip
+        sudo mv packer /usr/local/bin/
         rm packer_${PACKER_VERSION}_linux_amd64.zip
       fi
 
