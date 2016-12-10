@@ -1,25 +1,31 @@
 machine:
   timezone: Asia/Tokyo
   environment:
+    PATH: $HOME/.packer/:$PATH
     PACKER_VERSION: 0.12.0
+
+dependencies:
+  cache_directories:
+    - ~/.packer
 
 dependencies:
   pre:
     - |
-      if [ -e /usr/local/bin/packer ]; then
+      if [ -e $HOME/.packer/ ]; then
         current_packer_version=`packer --version`
         if echo $current_packer_version | grep $PACKER_VERSION; then
           echo "Using ${current_packer_version}"
         else
           echo "Uninstall ${current_packer_version}"
-          sudo rm -f /usr/local/bin/packer
+          rm -rf $HOME/.packer
         fi
       fi
     - |
+      mkdir -p $HOME/.packer
       if [ -z "$(ls -A /usr/local/bin/packer)" ]; then
+        cd $HOME/.packer
         curl -LO https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
         unzip packer_${PACKER_VERSION}_linux_amd64.zip
-        sudo mv packer /usr/local/bin/
         rm packer_${PACKER_VERSION}_linux_amd64.zip
       fi
     - |
@@ -33,4 +39,3 @@ test:
     - ansible --version | sed -n 1p
     - |
       bash test.sh
-
