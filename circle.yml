@@ -24,9 +24,14 @@ dependencies:
         sudo mv packer /usr/local/bin/
         rm packer_${PACKER_VERSION}_linux_amd64.zip
       fi
+    - |
+      sudo apt-get install -y software-properties-common
+      sudo apt-add-repository -y ppa:ansible/ansible
+      sudo apt-get update
+      sudo apt-get install -y ansible
 
 test:
   post:
-    - packer --version
+    - ansible --version | sed -n 1p
     - |
       bash test.sh
